@@ -44,6 +44,7 @@ def questionOne():
 
 
 def questionTwo():
+    # with open("day_5_test.txt", "r") as file:
     with open("day_5.txt", "r") as file:
         data = file.read()
         seeds, *data_blocks = data.split("\n\n")
@@ -56,12 +57,14 @@ def questionTwo():
     for i in range(0, len(seed_inputs), 2):
         seeds.append([seed_inputs[i], seed_inputs[i] + seed_inputs[i + 1]])
 
+    print("seeds mid >> ", seeds)
+
     for data_block in data_blocks:
         ranges_list = []
         for line in data_block.splitlines()[1:]:
             ranges_list.append(list(map(int, line.split())))
 
-        new_seeds = []
+        ns = []
 
         while len(seeds) > 0:
             start, end = seeds.pop()
@@ -71,7 +74,7 @@ def questionTwo():
                 overlap_end = min(end, source + length)
 
                 if overlap_start < overlap_end:
-                    new_seeds.append(
+                    ns.append(
                         [
                             overlap_start - source + destination,
                             overlap_end - source + destination,
@@ -84,10 +87,10 @@ def questionTwo():
 
                     break
             else:
-                new_seeds.append([start, end])
+                ns.append([start, end])
 
-        seeds = new_seeds
-    print("seeds >>>", seeds)
+        seeds = ns
+    # print("seeds >>>", seeds)
     return seeds
 
 
