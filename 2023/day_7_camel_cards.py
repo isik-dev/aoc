@@ -191,11 +191,17 @@ def questionTwo():
                 ctg = "g"
         elif len(uniques) == 4:
             # AKT99
+            # AKJ99 -> AK999
             if "J" in uniques:
                 ctg = "d"
             else:
                 ctg = "f"
         elif len(uniques) == 3:
+            # QQQK8 -> d
+            # AAKKJ -> AAKKK -> c
+            # AAAKJ -> AAAKA -> b
+            # AAJKJ -> AAAKA -> b
+            # JAJKJ -> AAAKA -> b
             if max(uniques.values()) == 3:
                 if "J" in uniques:
                     ctg = "b"
@@ -203,12 +209,18 @@ def questionTwo():
                     ctg = "d"
             else:
                 if "J" in uniques:
-                    ctg = "c"
+                    j_inst = [m.start() for m in re.finditer('J', k["hand"])]
+                    if len(j_inst) > 1:
+                        ctg = "b"
+                    else:
+                        ctg = "c"
                 else:
                     ctg = "e"
         elif len(uniques) == 2:
-            # "AAAA1"
-            # "AAAKK"
+            # AAAA1 -> b
+            # AAAKK -> c
+            # AAAKJ -> AAAKA -> b
+            # AAAJJ -> AAAAA -> a
             if max(uniques.values()) == 4:
                 if "J" in uniques:
                     ctg = "a"
@@ -216,7 +228,11 @@ def questionTwo():
                     ctg = "b"
             else:
                 if "J" in uniques:
-                    ctg = "b"
+                    j_inst = [m.start() for m in re.finditer('J', k["hand"])]
+                    if len(j_inst) > 1:
+                        ctg = "a"
+                    else:
+                        ctg = "b"
                 else:
                     ctg = "c"
         else:
@@ -253,7 +269,7 @@ def questionTwo():
     for i in range(n):
         inp[i]["rank"] = n - i
         out = out + int(inp[i]["rank"]) * int(inp[i]["bid"])
-    print("bubble sorted inp", inp)
+    print(inp)
     return out
 
 
