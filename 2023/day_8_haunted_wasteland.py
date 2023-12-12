@@ -1,4 +1,6 @@
+import math
 # --- Day 8: Haunted Wasteland ---
+
 
 def questionOne():
     with open("day_8.txt", "r") as file:
@@ -12,7 +14,7 @@ def questionOne():
         k = node[0:3]
         left = node[7:10]
         right = node[12:15]
-        ntw[k] = { "L": left, "R": right }
+        ntw[k] = {"L": left, "R": right}
     finished = False
     steps = 0
     drc = directions
@@ -21,18 +23,21 @@ def questionOne():
         nxt = None
         for idx, direction in enumerate(drc):
             if idx == 0:
-                nxt = ntw['AAA'][direction]
+                nxt = ntw["AAA"][direction]
             else:
                 nxt = ntw[nxt][direction]
             steps += 1
-            if nxt == 'ZZZ':
+            if nxt == "ZZZ":
                 finished = True
                 break
             if idx == len(drc) - 1 and not finished:
                 steps = 0
                 drc += directions
         print("steps", steps)
-#questionOne()
+
+
+# questionOne()
+
 
 def questionTwo():
     with open("day_8.txt", "r") as file:
@@ -43,21 +48,21 @@ def questionTwo():
     print("directions", directions)
     ntw = {}
 
-    ending_a = [] 
+    ending_a = []
 
     for node in nodes:
         k = node[0:3]
         left = node[7:10]
         right = node[12:15]
-        ntw[k] = { "L": left, "R": right }
+        ntw[k] = {"L": left, "R": right}
 
-        if k[-1] == 'A':
+        if k[-1] == "A":
             ending_a.append(k)
 
     print("ending_a", ending_a)
     # test case
-    #path_1 = ending_a[0]
-    #path_2 = ending_a[1]
+    # path_1 = ending_a[0]
+    # path_2 = ending_a[1]
 
     path_1 = ending_a[0]
     path_2 = ending_a[1]
@@ -96,14 +101,58 @@ def questionTwo():
                 nxt_6 = ntw[nxt_6][direction]
             steps += 1
 
-
             if idx == len(drc) - 1:
-                if nxt_1[-1] == 'Z' and nxt_2[-1] == 'Z' and nxt_3[-1] == 'Z' and nxt_4[-1] == 'Z' and nxt_5[-1] == 'Z' and nxt_6[-1] == 'Z':
+                if (
+                    nxt_1[-1] == "Z"
+                    and nxt_2[-1] == "Z"
+                    and nxt_3[-1] == "Z"
+                    and nxt_4[-1] == "Z"
+                    and nxt_5[-1] == "Z"
+                    and nxt_6[-1] == "Z"
+                ):
                     finished = True
                     break
                 else:
                     drc += directions
                     restart = True
 
-    print("steps", steps)    
-questionTwo()
+    print("steps", steps)
+
+
+# questionTwo()
+
+with open("day_8.txt") as file:
+    tFile = file.read().strip()
+    data = tFile.split("\n\n")
+    directions = list(data[0])
+    ntw = {}
+
+
+def questionTwoLCM():
+    for k in data[1].split("\n"):
+        key = k.split(" ")[0]
+        left = k.split("(")[1].split(",")[0]
+        right = k.split(" ")[3].split(")")[0]
+
+        ntw[key] = (left, right)
+
+    steps = 1
+    for node in ntw:
+        if node[-1] == "A":
+            #        print("prev steps", steps)
+            steps = math.lcm(steps, getStepsPerPath(node))
+    #        print("node", node)
+    print(steps)
+
+
+def getStepsPerPath(node):
+    next_node = node
+    idx = 0
+    while not next_node[-1] == "Z":
+        d = directions[idx % len(directions)]
+        next_node = ntw[next_node][0 if d == "L" else 1]
+        idx += 1
+    return idx
+
+
+questionTwoLCM()
